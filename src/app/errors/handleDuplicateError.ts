@@ -1,5 +1,4 @@
-import { TGenericErrorResponse } from "../interfaces/error"
-import { TErrorSources } from "../interfaces/error"
+import { TGenericErrorResponse, TErrorSources } from '../interfaces/error'
 
 
 const handleDuplicateError = (err: any): TGenericErrorResponse => {
