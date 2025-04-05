@@ -24,6 +24,7 @@ const userValidationShcema = z.object({
     .refine((password) => !/^\s*$/.test(password), {
       message: 'Password cannot contain only spaces',
     }),
+  address: z.string({ required_error: 'Password is required!' }).optional(),
 })
 const updateUserValidationShcema = z.object({
   name: z

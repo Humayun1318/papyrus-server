@@ -35,7 +35,7 @@ const userSchema = new Schema<TUser>(
     },
     address: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   {

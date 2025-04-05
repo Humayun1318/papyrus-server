@@ -6,6 +6,6 @@ export type TUser = {
     password: string;
     role: 'admin' | 'user';
     isDeactivate: boolean;
-    address:""
+    address?:""
   };
   
