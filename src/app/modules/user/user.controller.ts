@@ -28,7 +28,6 @@ const updateUser = catchAsync(async (req, res) => {
   const { userId } = req.params
   const userData = req.body
   const result = await userServices.updateUserIntoDB(userId, userData)
-
   sendResponse(res, {
     statusCode: status.OK,
     success: true,

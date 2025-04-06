@@ -14,10 +14,7 @@ const updateUserIntoDB = async (id: string, data: Partial<TUser>) => {
     new: true,
     runValidators: true,
   })
-  //   const result = await ProductModel.findByIdAndUpdate(id, data, {
-  //     new: true,
-  //     runValidators: true,
-  //   });
+  
   return result
 }
 
