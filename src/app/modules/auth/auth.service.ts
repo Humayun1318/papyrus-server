@@ -72,9 +72,6 @@ const refreshToken = async (token: string) => {
     config.jwt_access_secret as string,
     config.jwt_access_secret_expires_in as string,
   )
-
-
-  console.log('jwt', jwtPayload, 'accessx  token', refreshToken)
   return { accessToken }
 }
 export const AuthServices = {

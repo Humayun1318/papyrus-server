@@ -55,7 +55,8 @@ const updateUserValidationShcema = z.object({
       .min(1, 'Password cannot be empty or only spaces')
       .refine((password) => !/^\s*$/.test(password), {
         message: 'Password cannot contain only spaces',
-      }).optional(),
+      })
+      .optional(),
     address: z.string({ required_error: 'Password is required!' }).optional(),
   }),
 })

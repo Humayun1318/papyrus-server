@@ -1,7 +1,7 @@
 import catchAsync from '../../utils/catchAsync'
 import sendResponse from '../../utils/sendResponse'
 import status from 'http-status'
-import { AuthServices } from './auth.services'
+import { AuthServices } from './auth.service'
 import config from '../../config'
 
 const registerUser = catchAsync(async (req, res) => {

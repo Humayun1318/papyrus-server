@@ -14,7 +14,7 @@ const updateUserIntoDB = async (id: string, data: Partial<TUser>) => {
     new: true,
     runValidators: true,
   })
-  
+
   return result
 }
 
