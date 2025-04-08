@@ -3,25 +3,6 @@ import sendResponse from '../../utils/sendResponse'
 import status from 'http-status'
 import { userServices } from './user.service'
 
-<<<<<<< HEAD
-=======
-
-
-// const createNewUser = catchAsync(async (req, res) => {
-   
-//     const result = await userServices.RegisterUserIntoDB(req.body);
-  
-//     sendResponse(res, {
-//       statusCode: status.OK,
-//       success: true,
-//       message: 'User registered successfully',
-//       data: result,
-//     });
-//   });
-
-
-
->>>>>>> 3b257219d15d005c906c997e40cd8cd2d546fbb4
 const getUsers = catchAsync(async (req, res) => {
   const result = await userServices.getUsersFromDB()
 
@@ -59,9 +40,4 @@ export const userControllers = {
   getUsers,
   getSingleUser,
   updateUser,
-<<<<<<< HEAD
 }
-=======
-//   createNewUser
-}
->>>>>>> 3b257219d15d005c906c997e40cd8cd2d546fbb4

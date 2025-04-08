@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { userRole } from './user.constant'
+import  {USER_ROLE}  from './user.constant'
 
 const userValidationShcema = z.object({
   body: z.object({
@@ -12,7 +12,7 @@ const userValidationShcema = z.object({
       }),
     email: z.string({ required_error: 'Email is required.' }).email(),
     role: z
-      .enum([...(userRole as [string, ...string[]])], {
+      .enum([...(Object.values(USER_ROLE) as [string, ...string[]])], {
         errorMap: () => ({
           message: 'Invalid role! Allowed roles are admin or user',
         }),
@@ -43,7 +43,7 @@ const updateUserValidationShcema = z.object({
       .email()
       .optional(),
     role: z
-      .enum([...(userRole as [string, ...string[]])], {
+      .enum([...(Object.values(USER_ROLE) as [string, ...string[]])], {
         errorMap: () => ({
           message: 'Invalid role! Allowed roles are admin or user',
         }),
