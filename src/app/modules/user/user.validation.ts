@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { USER_ROLE } from './user.constant'
+import { userRole } from './user.constant'
 
 const userValidationShcema = z.object({
   body: z.object({
@@ -11,11 +11,13 @@ const userValidationShcema = z.object({
         message: 'Name cannot contain only spaces',
       }),
     email: z.string({ required_error: 'Email is required.' }).email(),
-    role: z.enum(Object.values(USER_ROLE) as [string, ...string[]], {
+    role: z
+      .enum([...(userRole as [string, ...string[]])], {
         errorMap: () => ({
           message: 'Invalid role! Allowed roles are admin or user',
         }),
-      }).optional(),
+      })
+      .optional(),
     password: z
       .string({ required_error: 'Password is required!' })
       .trim()
@@ -40,18 +42,21 @@ const updateUserValidationShcema = z.object({
       .string({ required_error: 'Email is required.' })
       .email()
       .optional(),
-      role: z.enum(Object.values(USER_ROLE) as [string, ...string[]], {
+    role: z
+      .enum([...(userRole as [string, ...string[]])], {
         errorMap: () => ({
           message: 'Invalid role! Allowed roles are admin or user',
         }),
-      }).optional(),
+      })
+      .optional(),
     password: z
       .string({ required_error: 'Password is required!' })
       .trim()
       .min(1, 'Password cannot be empty or only spaces')
       .refine((password) => !/^\s*$/.test(password), {
         message: 'Password cannot contain only spaces',
-      }).optional(),
+      })
+      .optional(),
     address: z.string({ required_error: 'Password is required!' }).optional(),
   }),
 })
