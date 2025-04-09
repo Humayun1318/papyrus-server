@@ -6,7 +6,6 @@ export type TUser = {
   name: string
   email: string
   password: string
-  status: 'active' | 'blocked'
   role: 'admin' | 'user'
   isDeactivate: boolean
   phone?: string;

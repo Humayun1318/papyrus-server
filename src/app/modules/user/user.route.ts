@@ -10,7 +10,7 @@ router.get('/', auth('admin'), userControllers.getUsers)
 router.get('/:userId', auth('user', 'admin'), userControllers.getSingleUser)
 router.patch(
   '/:userId',
-  auth('user'),
+  auth('user','admin'),
   validateRequest(UserValidation.updateUserValidationShcema),
   userControllers.updateUser,
 )

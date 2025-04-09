@@ -9,17 +9,12 @@ const auth = (...requiredRoles: string[]) => {
       const extractedToken = req.headers.authorization
 
       if (!extractedToken) {
-        throw new AppError(
-          StatusCodes.UNAUTHORIZED,
-          'You are not authorized as admin',
-        )
+        throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized')
       }
       const token = (extractedToken as string).split(' ')[1]
       if (!token) {
         throw new AppError(401, 'You are not Authorized')
       }
-
-      //Check if the token is valid
       jwt.verify(
         token,
         config.jwt_access_token as string,
@@ -27,12 +22,10 @@ const auth = (...requiredRoles: string[]) => {
           if (err) {
             throw new AppError(401, 'Invalid Token')
           }
-          console.log('**************')
-          console.log('Decode: ', decoded)
+
           const role = (decoded as JwtPayload).role
           if (requiredRoles.length > 0 && !requiredRoles.includes(role)) {
-            console.log('Required Roles: ', requiredRoles)
-            throw new AppError(401, 'You are not Authorized as admin')
+            throw new AppError(401, 'You are not Authorized')
           }
 
           req.user = decoded as JwtPayload

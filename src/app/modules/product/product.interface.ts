@@ -11,3 +11,7 @@
     inStock: boolean;
     isDeleted: boolean;
   };
+
+
+
+

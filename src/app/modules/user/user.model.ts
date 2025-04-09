@@ -28,20 +28,14 @@ const userSchema = new Schema<TUser>(
       default: 'user',
       required: true,
     },
-    status: {
-        type: String,
-        enum: ['active', 'blocked'],
-        default: 'active',
-        required: true,
-      },
     isDeactivate: {
       type: Boolean,
       default: false,
       required: true,
     },
-    phone: { type: String, default: "N/A" },
-    address: { type: String, default: "N/A" },
-    city: { type: String, default: "N/A" },
+    phone: { type: String, default: 'N/A' },
+    address: { type: String, default: 'N/A' },
+    city: { type: String, default: 'N/A' },
   },
   {
     timestamps: true,
@@ -73,13 +67,12 @@ userSchema.post('save', function (doc, next) {
   next()
 })
 
-
 userSchema.statics.isUserExistsByCustomEmail = async function (email: string) {
-    return await User.findOne({ email });
-  };
+  return await User.findOne({ email })
+}
 
 userSchema.statics.isUserExistsByCustomId = async function (id: string) {
-  return await User.findOne({ _id:id }).select('+password')
+  return await User.findOne({ _id: id }).select('+password')
 }
 
 userSchema.statics.isPasswordMatched = async function (
