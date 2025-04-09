@@ -26,4 +26,3 @@ export default {
     sp_return_url: process.env.SP_RETURN_URL,
   },
 }
-

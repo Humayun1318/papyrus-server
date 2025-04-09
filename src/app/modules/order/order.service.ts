@@ -5,6 +5,7 @@ import { User } from '../user/user.model'
 import { TOrder } from './order.interface'
 import { Order } from './order.model'
 import { orderUtils } from './order.utils'
+import { AnyBulkWriteOperation } from 'mongoose'
 import status from 'http-status'
 
 type TOrderResponse = {
@@ -88,12 +89,35 @@ const createOrder = async (
     const createdOrder = await Order.create(payload)
 
     // update product quantities
-    const bulkUpdates = payload.products.map((item) => ({
-      updateOne: {
-        filter: { _id: item.productId },
-        update: { $inc: { quantity: -item.quantity } },
-      },
-    }))
+    // const bulkUpdates = payload.products.map((item) => ({
+    //   updateOne: {
+    //     filter: { _id: item.productId },
+    //     update: { $inc: { quantity: -item.quantity } },
+    //   },
+    // }))
+
+    // Cleaned and type-safe bulkWrite logic
+    const bulkUpdates: AnyBulkWriteOperation<typeof Product>[] = []
+
+    productsFromDB.forEach((product) => {
+      const orderedItem = payload.products.find(
+        (item) => item.productId.toString() === product._id.toString(),
+      )
+
+      if (orderedItem) {
+        const updatedQuantity = product.quantity - orderedItem.quantity
+
+        bulkUpdates.push({
+          updateOne: {
+            filter: { _id: product._id },
+            update: {
+              $inc: { quantity: -orderedItem.quantity },
+              $set: { inStock: updatedQuantity > 0 },
+            },
+          },
+        })
+      }
+    })
 
     await Product.bulkWrite(bulkUpdates)
 
@@ -134,8 +158,9 @@ const createOrder = async (
       // checkout_url: payment?.checkout_url || '',
       payment,
     }
+    // eslint-disable-next-line no-unused-vars
   } catch (error) {
-    console.error('Order creation error:', error)
+    // console.error('Order creation error:', error)
     throw new AppError(
       status.INTERNAL_SERVER_ERROR,
       'Failed to initiate order.',
