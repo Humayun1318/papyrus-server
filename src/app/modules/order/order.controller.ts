@@ -1,36 +1,24 @@
 import catchAsync from '../../utils/catchAsync'
 import sendResponse from '../../utils/sendResponse'
-import { User } from '../user/user.model'
 import { OrderServices } from './order.service'
+import status from 'http-status'
 // import { Document } from 'mongoose'
 
 const createOrderController = catchAsync(async (req, res) => {
   const orderPayload = req.body
   const { userId } = req.body
-
-  if (!userId) {
-    return res
-      .status(400)
-      .json({ success: false, message: 'User ID is required' })
-  }
-
   // Fetch the user by ID
-  const user = await User.findById(userId)
-
-  if (!user) {
-    return res.status(404).json({ success: false, message: 'User not found' })
-  }
-
   // Proceed with order creation
   const { createdOrder, /**checkout_url,**/ payment } =
-    await OrderServices.createOrder(orderPayload, user.email, req.ip || '::1')
+    await OrderServices.createOrder(orderPayload, userId, req.ip || '::1')
 
-  return res.status(201).json({
+  sendResponse(res, {
     success: true,
-    message: 'Order placed successfully.',
+    message: 'Order placed successfully',
+    statusCode: status.CREATED,
     data: {
       order: createdOrder,
-    //   checkout_url,
+      //   checkout_url,
       paymentResponse: payment,
     },
   })
@@ -43,7 +31,7 @@ const getAllOrdersController = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     message: 'Orders retrieved successfully',
-    statusCode: 200,
+    statusCode: status.OK,
     data: result.result,
   })
 })
@@ -55,7 +43,7 @@ const getOrderController = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     message: 'Order retrieved successfully',
-    statusCode: 200,
+    statusCode: status.OK,
     data: order,
   })
 })
@@ -67,7 +55,7 @@ const getOrderHistoryBySpecificUserController = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     message: 'Specific user wise order history are retrieved successfully',
-    statusCode: 200,
+    statusCode: status.OK,
     data: orders,
   })
 })
@@ -80,7 +68,7 @@ const updateOrderStatusController = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     message: 'Order status updated successfully',
-    statusCode: 200,
+    statusCode: status.OK,
     data: updatedStatus,
   })
 })
@@ -91,7 +79,7 @@ const verifyPayment = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     message: 'Order verified successfully',
-    statusCode: 200,
+    statusCode: status.OK,
     data: order,
   })
 })

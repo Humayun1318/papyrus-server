@@ -1,37 +1,35 @@
-
 import QueryBuilder from '../../builder/QueryBuilder'
-import { HttpError } from '../../errors/HttpError'
+import AppError from '../../errors/AppError'
 import { Product } from '../product/product.model'
 import { User } from '../user/user.model'
 import { TOrder } from './order.interface'
 import { Order } from './order.model'
 import { orderUtils } from './order.utils'
-
-
+import status from 'http-status'
 type TOrderResponse = {
   createdOrder: TOrder
-//   checkout_url: string
+  //   checkout_url: string
   payment: any
 }
 
 const createOrder = async (
   payload: TOrder,
-  userEmail: string,
+  userId: string,
   client_ip: string,
 ): Promise<TOrderResponse> => {
   // Check if user exists
-  const user = await User.isUserExistsByCustomEmail(userEmail)
-  if (!user) throw new HttpError(404, 'User not found')
-  if (user.status === 'blocked') {
-    throw new HttpError(
-      403,
-      'Your account is banned. You cannot perform this action.',
-   )
+  const user = await User.findById(userId)
+  // const user = await User.isUserExistsByCustomEmail(user?.email)
+  if (!user) throw new AppError(status.NOT_FOUND, 'User not found')
+  if (user?.isDeactivate === true) {
+    throw new AppError(
+      status.FORBIDDEN,
+      'Your account is Deactivate. You cannot perform this action.',
+    )
   }
-
   //  Validate payload
   if (!payload.products || payload.products.length === 0) {
-    throw new HttpError(400, 'At least one product is required.')
+    throw new AppError(status.BAD_REQUEST, 'At least one product is required.')
   }
 
   // Fetch products from DB
@@ -39,10 +37,9 @@ const createOrder = async (
   const productsFromDB = await Product.find({ _id: { $in: productIds } })
 
   if (productsFromDB.length !== payload.products.length) {
-    throw new HttpError(404, 'One or more products not found.')
+    throw new AppError(status.NOT_FOUND, 'One or more products not found.')
   }
 
-  
   const productMap = new Map<string, (typeof productsFromDB)[0]>()
   productsFromDB.forEach((product) => {
     productMap.set(product._id.toString(), product)
@@ -55,16 +52,24 @@ const createOrder = async (
     const product = productMap.get(item.productId.toString())
 
     if (!product) {
-      throw new HttpError(404, `Product with ID ${item.productId} not found.`)
+      throw new AppError(
+        status.NOT_FOUND,
+        `Product with ID ${item.productId} not found.`,
+      )
     }
 
     if (product.quantity <= 0) {
-      throw new HttpError(400, `Product "${product.name}" is out of stock.`)
+      product.inStock = false
+      await product.save()
+      throw new AppError(
+        status.BAD_REQUEST,
+        `Product "${product.name}" is out of stock.`,
+      )
     }
 
     if (item.quantity > product.quantity) {
-      throw new HttpError(
-        400,
+      throw new AppError(
+        status.BAD_REQUEST,
         `Only ${product.quantity} units of "${product.name}" are available.`,
       )
     }
@@ -78,7 +83,7 @@ const createOrder = async (
 
   try {
     //  Create order
-    // await OrderValidationSchema.parseAsync({ body: req.body }); 
+    // await OrderValidationSchema.parseAsync({ body: req.body });
     const createdOrder = await Order.create(payload)
 
     // update product quantities
@@ -119,10 +124,10 @@ const createOrder = async (
         },
       )
     }
-    
-    // console.log('Payment Response:', payment);  
+
+    // console.log('Payment Response:', payment);
     // console.log(payment.checkout_url)
-    
+
     return {
       createdOrder,
       // checkout_url: payment?.checkout_url || '',
@@ -130,7 +135,10 @@ const createOrder = async (
     }
   } catch (error) {
     console.error('Order creation error:', error)
-    throw new HttpError(500, 'Failed to initiate order.')
+    throw new AppError(
+      status.INTERNAL_SERVER_ERROR,
+      'Failed to initiate order.',
+    )
   }
 }
 
@@ -155,7 +163,7 @@ const getAllOrders = async (query: Record<string, unknown>) => {
   const result = await orderQuery.modelQuery
 
   if (!result?.length) {
-    throw new HttpError(404, 'No orders found in the database')
+    throw new AppError(status.OK, 'No orders found!')
   }
 
   return { meta, result }
@@ -167,7 +175,7 @@ const getOrderById = async (id: string) => {
     .populate('products.productId')
 
   if (!order) {
-    throw new HttpError(404, 'No order found with the provided ID')
+    throw new AppError(status.NOT_FOUND, 'Order not found!')
   }
 
   return order
@@ -177,24 +185,23 @@ const getOrderHistoryBySpecificUser = async (userEmail: string) => {
   const user = await User.isUserExistsByCustomEmail(userEmail)
 
   if (!user) {
-    throw new HttpError(404, 'User not found')
+    throw new AppError(status.NOT_FOUND, 'User not found!')
   }
 
   const orders = await Order.find({ userId: user.id })
     .populate('userId', '_id name identifier role')
     .populate('products.productId')
-    
 
   if (!orders?.length) {
-    throw new HttpError(404, 'No order history found for this user')
+    throw new AppError(status.OK, 'No order found')
   }
 
   return orders
 }
 
-const updateOrderStatusById = async (id: string, status: string) => {
-  if (!VALID_ORDER_STATUSES.includes(status)) {
-    throw new HttpError(400, `Invalid status: ${status}`)
+const updateOrderStatusById = async (id: string, orderStatus: string) => {
+  if (!VALID_ORDER_STATUSES.includes(orderStatus)) {
+    throw new AppError(status.BAD_REQUEST, `Invalid status: ${orderStatus}`)
   }
 
   const updatedOrder = await Order.findByIdAndUpdate(
@@ -204,7 +211,7 @@ const updateOrderStatusById = async (id: string, status: string) => {
   )
 
   if (!updatedOrder) {
-    throw new HttpError(404, 'No order found with the provided ID')
+    throw new AppError(status.NOT_FOUND, 'No order found with the provided ID')
   }
 
   return updatedOrder

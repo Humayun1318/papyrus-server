@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import  {USER_ROLE}  from './user.constant'
+import { USER_ROLE } from './user.constant'
 
 const userValidationShcema = z.object({
   body: z.object({

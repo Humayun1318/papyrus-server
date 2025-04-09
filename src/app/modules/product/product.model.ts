@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-const { Schema } = mongoose;
+import mongoose from 'mongoose'
+const { Schema } = mongoose
 
 const productSchema = new Schema(
   {
@@ -8,8 +8,8 @@ const productSchema = new Schema(
       required: true,
     },
     image: {
-        type: String,
-        // required: true,
+      type: String,
+      required: true,
     },
     brand: {
       type: String,
@@ -21,7 +21,12 @@ const productSchema = new Schema(
     },
     category: {
       type: String,
-      enum: ['Writing Instruments', 'Paper Products', 'Art Supplies', 'Educational'],
+      enum: [
+        'Writing Instruments',
+        'Paper Products',
+        'Art Supplies',
+        'Educational',
+      ],
       required: true,
     },
     description: {
@@ -34,7 +39,6 @@ const productSchema = new Schema(
     },
     inStock: {
       type: Boolean,
-      required: true,
       default: true,
     },
     isDeleted: {
@@ -43,7 +47,6 @@ const productSchema = new Schema(
     },
   },
   { timestamps: true },
-);
+)
 
-
-export const Product = mongoose.model('Product', productSchema);
+export const Product = mongoose.model('Product', productSchema)
