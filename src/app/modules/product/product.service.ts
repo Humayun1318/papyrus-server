@@ -38,6 +38,10 @@ const updateProductInDB = async (
   productId: string,
   updatedData: Partial<TProduct>,
 ) => {
+  if (typeof updatedData.quantity === 'number') {
+    updatedData.inStock = updatedData.quantity > 0
+  }
+
   const result = await Product.findByIdAndUpdate(productId, updatedData, {
     new: true,
   })

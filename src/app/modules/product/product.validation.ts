@@ -56,7 +56,6 @@ const updateProductValidationSchema = z.object({
         invalid_type_error: 'Quantity must be a number',
       })
       .int()
-      .positive({ message: 'Quantity must be a positive number' })
       .optional(),
   }),
 })

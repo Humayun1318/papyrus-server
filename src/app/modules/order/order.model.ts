@@ -5,7 +5,7 @@ const orderSchema = new Schema<TOrder>(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
     products: [
       new Schema({
@@ -27,8 +27,8 @@ const orderSchema = new Schema<TOrder>(
     },
     status: {
       type: String,
-      enum: ["Pending", "Paid", "Shipped", "Completed", "Cancelled"],
-      default: "Pending",
+      enum: ['Pending', 'Paid', 'Shipped', 'Completed', 'Cancelled'],
+      default: 'Pending',
     },
     transaction: {
       id: String,
