@@ -14,7 +14,12 @@ router.post(
   OrderControllers.createOrderController,
 )
 
-router.get('/verify', auth(USER_ROLE.USER), OrderControllers.verifyPayment)
+router.get(
+  '/verify',
+  // auth("user","admin"),
+  auth(USER_ROLE.USER, USER_ROLE.ADMIN),
+  OrderControllers.verifyPayment,
+)
 
 router.get(
   '/byUser',
@@ -24,7 +29,7 @@ router.get(
 
 router.get('/', auth('admin'), OrderControllers.getAllOrdersController)
 
-router.get('/:id', auth('admin','user'), OrderControllers.getOrderController)
+router.get('/:id', auth('admin', 'user'), OrderControllers.getOrderController)
 
 router.patch(
   '/:id/status',

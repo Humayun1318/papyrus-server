@@ -6,6 +6,7 @@ import { TOrder } from './order.interface'
 import { Order } from './order.model'
 import { orderUtils } from './order.utils'
 import status from 'http-status'
+
 type TOrderResponse = {
   createdOrder: TOrder
   //   checkout_url: string
@@ -161,11 +162,9 @@ const getAllOrders = async (query: Record<string, unknown>) => {
 
   const meta = await orderQuery.countTotal()
   const result = await orderQuery.modelQuery
-
   if (!result?.length) {
     throw new AppError(status.OK, 'No orders found!')
   }
-
   return { meta, result }
 }
 
@@ -177,25 +176,23 @@ const getOrderById = async (id: string) => {
   if (!order) {
     throw new AppError(status.NOT_FOUND, 'Order not found!')
   }
-
   return order
 }
 
-const getOrderHistoryBySpecificUser = async (userEmail: string) => {
-  const user = await User.isUserExistsByCustomEmail(userEmail)
-
+const getOrderHistoryBySpecificUser = async (userId: string) => {
+  // const user = await User.isUserExistsByCustomEmail(userEmail)
+  const user = await User.findById(userId)
   if (!user) {
     throw new AppError(status.NOT_FOUND, 'User not found!')
   }
 
-  const orders = await Order.find({ userId: user.id })
+  const orders = await Order.find({ userId: user._id })
     .populate('userId', '_id name identifier role')
     .populate('products.productId')
 
   if (!orders?.length) {
     throw new AppError(status.OK, 'No order found')
   }
-
   return orders
 }
 
@@ -206,7 +203,7 @@ const updateOrderStatusById = async (id: string, orderStatus: string) => {
 
   const updatedOrder = await Order.findByIdAndUpdate(
     id,
-    { status },
+    { status: orderStatus },
     { new: true, runValidators: true },
   )
 

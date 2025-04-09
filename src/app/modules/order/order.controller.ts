@@ -49,8 +49,8 @@ const getOrderController = catchAsync(async (req, res) => {
 })
 
 const getOrderHistoryBySpecificUserController = catchAsync(async (req, res) => {
-  const userEmail = req.user.email
-  const orders = await OrderServices.getOrderHistoryBySpecificUser(userEmail)
+  const userId = req.user.userId
+  const orders = await OrderServices.getOrderHistoryBySpecificUser(userId)
 
   sendResponse(res, {
     success: true,
@@ -62,8 +62,11 @@ const getOrderHistoryBySpecificUserController = catchAsync(async (req, res) => {
 
 const updateOrderStatusController = catchAsync(async (req, res) => {
   const id = req.params.id
-  const { status } = req.body
-  const updatedStatus = await OrderServices.updateOrderStatusById(id, status)
+  const orderStatus = req.body.status
+  const updatedStatus = await OrderServices.updateOrderStatusById(
+    id,
+    orderStatus,
+  )
 
   sendResponse(res, {
     success: true,
