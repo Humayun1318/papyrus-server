@@ -44,6 +44,7 @@ const updateProductInDB = async (
   if (!result) {
     throw new AppError(status.NOT_FOUND, 'Product is not found!')
   }
+
   return result
 }
 
