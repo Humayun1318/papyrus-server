@@ -1,4 +1,7 @@
+// import QueryBuilder from '../../builder/QueryBuilder'
+import QueryBuilder from '../../builder/QueryBuilder'
 import AppError from '../../errors/AppError'
+import { productSearchableFields } from './product.constant'
 import { TProduct } from './product.interface'
 import { Product } from './product.model'
 import status from 'http-status'
@@ -8,22 +11,15 @@ const createProductIntoDB = async (productData: TProduct) => {
   return result
 }
 
-const getAllProductsFromDB = async (searchTerm?: string) => {
-  const filter = searchTerm
-    ? {
-        $or: [
-          { name: { $regex: searchTerm, $options: 'i' } },
-          { brand: { $regex: searchTerm, $options: 'i' } },
-          { category: { $regex: searchTerm, $options: 'i' } },
-        ],
-      }
-    : {}
-
-  const result = await Product.find(filter)
-  if (result.length === 0) {
-    throw new AppError(status.OK, 'No products found!')
+const getAllProductsFromDB = async (query: Record<string, unknown>) => {
+  const productQuery = new QueryBuilder(Product.find(), query)
+    .search(productSearchableFields)
+    .filter()
+    .sort()
+  const result = await productQuery.modelQuery
+  return {
+    result,
   }
-  return result
 }
 
 const getSingleProductFromDB = async (productId: string) => {

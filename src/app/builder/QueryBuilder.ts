@@ -10,7 +10,8 @@ class QueryBuilder<T> {
   }
 
   search(searchableFields: string[]) {
-    const searchTerm = (this.query?.search as string) || ''
+    let searchTerm = (this.query?.searchTerm as string) || ''
+    searchTerm = searchTerm.trim().replace(/\s+/g, ' ')
     if (searchTerm) {
       this.modelQuery = this.modelQuery.find({
         $or: searchableFields.map(
@@ -21,12 +22,12 @@ class QueryBuilder<T> {
         ),
       })
     }
+
     return this
   }
-
   filter() {
     const queryObj = { ...this.query }
-    const excludeFields = ['search', 'sortBy', 'sortOrder']
+    const excludeFields = ['searchTerm', 'sortBy', 'sortOrder']
     excludeFields.forEach((el) => delete queryObj[el])
     if (queryObj.filter) {
       queryObj.author = queryObj.filter
