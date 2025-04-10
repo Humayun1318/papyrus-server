@@ -57,7 +57,9 @@ const updateUserValidationShcema = z.object({
         message: 'Password cannot contain only spaces',
       })
       .optional(),
-    address: z.string({ required_error: 'Password is required!' }).optional(),
+    address: z.string({ required_error: 'Address is required!' }).optional(),
+    phone: z.string({ required_error: 'Phone is required!' }).optional(),
+    city: z.string({ required_error: 'City is required!' }).optional(),
   }),
 })
 export const UserValidation = {

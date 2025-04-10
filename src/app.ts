@@ -21,7 +21,7 @@ app.use(
 // Application Routes
 app.use('/api', router)
 const getController = async (req: Request, res: Response) => {
-  res.send('Whats Up Buddy!')
+  res.send('Welcome to Papyrus!')
 }
 
 app.get('/', getController)
