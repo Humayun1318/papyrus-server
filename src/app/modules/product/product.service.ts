@@ -16,9 +16,18 @@ const getAllProductsFromDB = async (query: Record<string, unknown>) => {
     .search(productSearchableFields)
     .filter()
     .sort()
+    .paginate()
+
   const result = await productQuery.modelQuery
+
+  const countQuery = new QueryBuilder(Product.find(), query)
+    .search(productSearchableFields)
+    .filter()
+
+  const meta = await countQuery.countTotal()
   return {
     result,
+    meta,
   }
 }
 

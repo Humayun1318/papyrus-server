@@ -27,7 +27,7 @@ class QueryBuilder<T> {
   }
   filter() {
     const queryObj = { ...this.query }
-    const excludeFields = ['searchTerm', 'sortBy', 'sortOrder']
+    const excludeFields = ['searchTerm', 'sortBy', 'sortOrder', 'page', 'limit']
     excludeFields.forEach((el) => delete queryObj[el])
     if (queryObj.filter) {
       queryObj.author = queryObj.filter
@@ -60,7 +60,7 @@ class QueryBuilder<T> {
     const totalQueries = this.modelQuery.getFilter()
     const total = await this.modelQuery.model.countDocuments(totalQueries)
     const page = Number(this?.query?.page) || 1
-    const limit = Number(this?.query?.limit) || 10
+    const limit = Number(this?.query?.limit) || 6
     const totalPage = Math.ceil(total / limit)
 
     return {

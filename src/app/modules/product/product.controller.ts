@@ -19,6 +19,7 @@ const createProduct = async (req: Request, res: Response): Promise<void> => {
 
 const getAllProducts = catchAsync(async (req, res) => {
   const result = await ProductServices.getAllProductsFromDB(req.query)
+
   sendResponse(res, {
     success: true,
     message: 'Products retrieved successfully',
