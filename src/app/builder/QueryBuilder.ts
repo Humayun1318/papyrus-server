@@ -25,38 +25,45 @@ class QueryBuilder<T> {
 
     return this
   }
+
+  
   filter() {
-    const queryObj: Record<string, any> = { ...this.query }; // Explicitly type queryObj as Record<string, any>
-    const excludeFields = ['searchTerm', 'sortBy', 'sortOrder', 'minPrice', 'maxPrice'];
-    excludeFields.forEach((el) => delete queryObj[el]);
+    const queryObj: Record<string, any> = { ...this.query } 
+    const excludeFields = [
+      'searchTerm',
+      'sortBy',
+      'sortOrder',
+      'minPrice',
+      'maxPrice',
+      'page',
+      'limit',
+    ]
+    excludeFields.forEach((el) => delete queryObj[el])
 
     if (queryObj.filter) {
-      queryObj.author = queryObj.filter;
-      delete queryObj.filter;
+      queryObj.author = queryObj.filter
+      delete queryObj.filter
     }
 
-    
-    const minPrice = this.query?.minPrice;
-    const maxPrice = this.query?.maxPrice;
+    const minPrice = this.query?.minPrice
+    const maxPrice = this.query?.maxPrice
 
-    
     if (minPrice || maxPrice) {
-      queryObj['price'] = queryObj['price'] || {};
+      queryObj['price'] = queryObj['price'] || {}
       if (minPrice) {
-        queryObj['price'] = { ...queryObj['price'], $gte: minPrice };
+        queryObj['price'] = { ...queryObj['price'], $gte: minPrice }
       }
       if (maxPrice) {
-        queryObj['price'] = { ...queryObj['price'], $lte: maxPrice };
+        queryObj['price'] = { ...queryObj['price'], $lte: maxPrice }
       }
     }
 
     if (Object.keys(queryObj).length > 0) {
-      this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
+      this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>)
     }
 
-    return this;
+    return this
   }
-
 
   sort() {
     const sortBy = (this.query?.sortBy as string) || 'createdAt'
