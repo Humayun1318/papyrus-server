@@ -29,7 +29,6 @@ class QueryBuilder<T> {
     const queryObj: Record<string, any> = { ...this.query }; // Explicitly type queryObj as Record<string, any>
     const excludeFields = ['searchTerm', 'sortBy', 'sortOrder', 'minPrice', 'maxPrice'];
     excludeFields.forEach((el) => delete queryObj[el]);
-
     if (queryObj.filter) {
       queryObj.author = queryObj.filter;
       delete queryObj.filter;
@@ -79,7 +78,7 @@ class QueryBuilder<T> {
     const totalQueries = this.modelQuery.getFilter()
     const total = await this.modelQuery.model.countDocuments(totalQueries)
     const page = Number(this?.query?.page) || 1
-    const limit = Number(this?.query?.limit) || 10
+    const limit = Number(this?.query?.limit) || 6
     const totalPage = Math.ceil(total / limit)
 
     return {
