@@ -58,7 +58,7 @@
 1. Clone the repository:
 
 ```bash
- git clone https://github.com/rafiferdos/papyrus-server.git
+ git clone https://github.com/Humayun1318/papyrus-server.git
 ```
 
 2.  Go to the project directory and Install npm:
@@ -279,6 +279,12 @@ Password: 123456
 ## Necessary Links:
 
 1. **Live Links**: https://papyrus-server-lovat.vercel.app
-2. **Github Link**: https://github.com/rafiferdos/papyrus-server.git
+2. **Github Link**: https://github.com/Humayun1318/papyrus-server.git
 
+## 📬 Contact
 
+**Humayun Kabir**           
+📧 Email: humayunkabir6267@gmail.com  
+🐙 GitHub: [@Humayun1318](https://github.com/Humayun1318)
+
+Thank you for visiting the **Papyrus Server!** I hope you find the perfect pet to adopt.
